@@ -50,7 +50,7 @@ def newCatalog():
     catalog['videos'] = lt.newList('ARRAY_LIST',
                                 cmpfunction=None)
     catalog['categories'] = lt.newList('ARRAY_LIST',
-                                 cmpfunction=comparetagnames)
+                                 cmpfunction=None)
 
     return catalog
 
@@ -67,23 +67,6 @@ def addCategory(catalog, category):
     Adiciona una categoría a la lista de categorías
     """
     lt.addLast(catalog['categories'], category)
-
-
-def addVideoToCategory(catalog, category_id, video):
-    """
-    Adiciona una categoría a la lista de categorías
-    """
-    categories = catalog['categories']
-    poscategory = lt.isPresent(categories, category_id)
-    if poscategory > 0:
-        category = lt.getElement(categories, poscategory)
-    else:
-        category = newCategory(category_id)
-        lt.addLast(categories, category)
-    lt.addLast(tag['videos'], video)
-
-
-
 
 
 # Funciones para creacion de datos
@@ -109,64 +92,45 @@ def newBookTag(tag_id, book_id):
 
 
 # Funciones de consulta
+def getViews(e):
+    return e.get('views')
 
-def getBooksByAuthor(catalog, authorname):
+def sortByCountryAndCategory(catalog, ammount, tendency_country, ca_id):
     """
-    Retorna un autor con sus libros a partir del nombre del autor
+    Devuelve una lista con los videos con más vistas, según país de
+    tendencia, y la categoría de tendencia.
     """
-    posauthor = lt.isPresent(catalog['authors'], authorname)
-    if posauthor > 0:
-        author = lt.getElement(catalog['authors'], posauthor)
-        return author
-    return None
-
-
-def getBestBooks(catalog, number):
-    """
-    Retorna los mejores libros
-    """
-    books = catalog['books']
-    bestbooks = lt.newList()
-    for cont in range(1, number+1):
-        book = lt.getElement(books, cont)
-        lt.addLast(bestbooks, book)
-    return bestbooks
-
-
-def countBooksByTag(catalog, tag):
-    """
-    Retorna los libros que fueron etiquetados con el tag
-    """
-    tags = catalog['tags']
-    bookcount = 0
-    pos = lt.isPresent(tags, tag)
-    if pos > 0:
-        tag_element = lt.getElement(tags, pos)
-        if tag_element is not None:
-            for book_tag in lt.iterator(catalog['book_tags']):
-                if tag_element['tag_id'] == book_tag['tag_id']:
-                    bookcount += 1
-    return bookcount
-
+    video_list = catalog['videos']['elements']
+    videos_by_country_and_category = []
+    for video in video_list:
+        if video['country'] == tendency_country:
+            if video['category_id'] == ca_id:                
+                videos_by_country_and_category.append(video)
+    
+    
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def compareauthors(authorname1, author):
-    if (authorname1.lower() in author['name'].lower()):
-        return 0
-    return -1
+def compareCategoryName(catalog, category_name):
+    """
+    Entra el nombre de una categoría, y se consigue su ID.
+    """
+    for category in catalog['categories']['elements']:
+        if category['name'] == category_name:
+            category_id = category['id']
 
-
-def compareratings(book1, book2):
-    return (float(book1['average_rating']) > float(book2['average_rating']))
-
-
-def comparetagnames(name, tag):
-    return (name == tag['name'])
+    return category_id
 
 
 # Funciones de ordenamiento
 
-def sortVideos(catalog):    
-    sa.sort(catalog['videos'], compareratings)
-    
+"""def addVideoToCategory(catalog, category_id, video):
+    categories = catalog['categories']
+    poscategory = lt.isPresent(categories, category_id)
+    if poscategory > 0:
+        category = lt.getElement(categories, poscategory)
+    else:
+        category = newCategory(category_id)
+        lt.addLast(categories, category)
+    lt.addLast(tag['videos'], video) """
+            

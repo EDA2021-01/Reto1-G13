@@ -37,7 +37,7 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar la información sobre los videos")
-    print("2- Consultar los Top x libros por promedio")
+    print("2- Consultar los 'n' videos con más vistas por país según categoría")
     print("3- Consultar los libros de un autor")
     print("4- Libros por género")
     print("0- Salir")
@@ -56,26 +56,13 @@ def loadData(catalog):
     controller.loadData(catalog)
 
 
-def printAuthorData(author):
-    if author:
-        print('Autor encontrado: ' + author['name'])
-        print('Promedio: ' + str(author['average_rating']))
-        print('Total de libros: ' + str(lt.size(author['books'])))
-        for book in lt.iterator(author['books']):
-            print('Titulo: ' + book['title'] + '  ISBN: ' + book['isbn'])
-    else:
-        print('No se encontró el autor')
+def printTendencyVideosByCountry(list_of_videos):
+    """
+    Imprime los videos que se encontraron al buscar por cantidad de views, país de
+    tendencia, y categoría de tendencia.
+    """
+    
 
-
-def printBestBooks(books):
-    size = lt.size(books)
-    if size:
-        print(' Estos son los mejores libros: ')
-        for book in lt.iterator(books):
-            print('Titulo: ' + book['title'] + '  ISBN: ' +
-                  book['isbn'] + ' Rating: ' + book['average_rating'])
-    else:
-        print('No se encontraron libros')
 
 catalog = None
 
@@ -86,28 +73,30 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("Cargando información de los archivos ...\n")
         catalog = initCatalog()
         loadData(catalog)
-        # print(catalog['videos']['elements'][0]['video_id'])
-        print('Videos cargados: ' + str(lt.size(catalog['videos'])))
-        print('Categorías cargadas: ' + str(lt.size(catalog['categories'])))
+        first_video = catalog['videos']['elements'][0]
+        print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
+        print(catalog['videos']['elements'][0])
+        print('Primer registro de video cargado:\n')
+        print('Título del vídeo:', first_video['title'], '\n',
+            'Nombre del canal:', first_video['channel_title'], '\n',
+            'Fecha de tendencia:', first_video['trending_date'], '\n',
+            'País de tendencia:', first_video['country'], '\n',
+            'Cantidad de vistas:', first_video['views'], '\n',
+            'Cantidad de likes:', first_video['likes'], '\n',
+            'Cantidad de dislikes:', first_video['dislikes'], '\n',)
+        print('\nCatálogo de categorías: \n', catalog['categories']['elements'])
 
 
     elif int(inputs[0]) == 2:
-        number = input("Buscando los TOP ?: ")
-        books = controller.getBestBooks(catalog, int(number))
-        printBestBooks(books)
+        ammount = input("¿Cuántos videos quiere listar?: ")
+        tendency_country = input("Ingrese el país a consultar: ")
+        tendency_category = input("Ingrese la categoría a consultar: ")
+        best_videos = controller.loadSortingByCountryAndCategory(catalog, ammount, tendency_country, tendency_category)
+        printTendencyVideosByCountry(best_videos)
 
-    elif int(inputs[0]) == 3:
-        authorname = input("Nombre del autor a buscar: ")
-        author = controller.getBooksByAuthor(catalog, authorname)
-        printAuthorData(author)
-
-    elif int(inputs[0]) == 4:
-        label = input("Etiqueta a buscar: ")
-        book_count = controller.countBooksByTag(catalog, label)
-        print('Se encontraron: ', book_count, ' Libros')
 
     else:
         sys.exit(0)

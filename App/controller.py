@@ -45,7 +45,7 @@ def initCatalog():
 def loadData(catalog):
     """
     Carga los datos de los archivos y cargar los datos en la
-    estructura de datos
+    estructura de datos.
     """
     loadVideos(catalog)
     loadCategories(catalog)
@@ -53,9 +53,7 @@ def loadData(catalog):
 
 def loadVideos(catalog):
     """
-    Carga los libros del archivo.  Por cada libro se toman sus autores y por
-    cada uno de ellos, se crea en la lista de autores, a dicho autor y una
-    referencia al libro que se esta procesando.
+    Carga los videos del catálogo.
     """
     videosfile = cf.data_dir + 'videos-small.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
@@ -65,7 +63,7 @@ def loadVideos(catalog):
 
 def loadCategories(catalog):
     """
-    Carga todos los tags del archivo y los agrega a la lista de tags
+    Carga las categorías del catálogo.
     """
     categoriesfile = cf.data_dir + 'category-id.csv'
     input_file = csv.DictReader(open(categoriesfile, encoding='utf-8'))
@@ -73,37 +71,14 @@ def loadCategories(catalog):
         model.addCategory(catalog, category)
 
 
-
-
 # Funciones de ordenamiento
-
-def sortVideos(catalog):
-    """
-    Ordena los libros por average_rating
-    """
-    model.sortVideos(catalog)
 
 
 # Funciones de consulta sobre el catálogo
 
-def getBooksByAuthor(catalog, authorname):
+def loadSortingByCountryAndCategory(catalog, views, country, category_name):
     """
-    Retrona los libros de un autor
+    Consulta los x mejores videos con más views según categoría y país.
     """
-    author = model.getBooksByAuthor(catalog, authorname)
-    return author
-
-
-def getBestBooks(catalog, number):
-    """
-    Retorna los mejores libros
-    """
-    bestbooks = model.getBestBooks(catalog, number)
-    return bestbooks
-
-
-def countBooksByTag(catalog, tag):
-    """
-    Retorna los libros que fueron etiquetados con el tag
-    """
-    return model.countBooksByTag(catalog, tag)
+    ca_id = model.compareCategoryName(catalog, category_name)
+    return model.sortByCountryAndCategory(catalog, views, country, ca_id)
