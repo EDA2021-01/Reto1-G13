@@ -38,7 +38,23 @@ los mismos.
 # Construccion de modelos
 
 
-def newCatalog():
+def newLinkedCatalog():
+    """
+    Inicializa el catálogo de videos. Crea una lista vacía para guardar
+    todos los videos, y una lista vacía para las categorías de los mismos.
+    
+    """
+    catalog = {'videos': None,
+               'categories': None}
+
+    catalog['videos'] = lt.newList('SINGLE_LINKED',
+                                cmpfunction=compareauthors)
+    catalog['categories'] = lt.newList('SINGLE_LINKED',
+                                 cmpfunction=compareauthors)
+
+    return catalog
+
+def newArrayCatalog():
     """
     Inicializa el catálogo de videos. Crea una lista vacía para guardar
     todos los videos, y una lista vacía para las categorías de los mismos.
@@ -71,17 +87,6 @@ def addCategory(catalog, category):
 
 # Funciones para creacion de datos
 
-def newCategory(category_data):
-    """
-    Crea una nueva estructura para modelar los libros de
-    un autor y su promedio de ratings
-    """
-    category = {'name': "", "videos": None,  "average_rating": 0}
-    category['name'] = category_data['name']
-    category['videos'] = lt.newList('ARRAY_LIST')
-    return category
-
-
 def newBookTag(tag_id, book_id):
     """
     Esta estructura crea una relación entre un tag y
@@ -106,7 +111,7 @@ def sortByCountryAndCategory(catalog, ammount, tendency_country, ca_id):
         if video['country'] == tendency_country:
             if video['category_id'] == ca_id:                
                 videos_by_country_and_category.append(video)
-    
+    print(videos_by_country_and_category)
     
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -115,9 +120,12 @@ def compareCategoryName(catalog, category_name):
     """
     Entra el nombre de una categoría, y se consigue su ID.
     """
-    for category in catalog['categories']['elements']:
-        if category['name'] == category_name:
-            category_id = category['id']
+    if catalog['videos']['type'] == "SINGLE_LINKED":
+        
+    else:
+        for category in catalog['categories']['elements']:
+            if category['name'] == category_name:
+                category_id = category['id']
 
     return category_id
 
@@ -133,4 +141,9 @@ def compareCategoryName(catalog, category_name):
         category = newCategory(category_id)
         lt.addLast(categories, category)
     lt.addLast(tag['videos'], video) """
-            
+    
+# Funciones de comparación
+def compareauthors(authorname1, author):
+    if (authorname1.lower() in author['name'].lower()):
+        return 0
+    return -1            

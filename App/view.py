@@ -24,8 +24,12 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import singlelinkedlist as sl
+from DISClib.DataStructures import arraylist as al
 assert cf
 
+default_limit = (1000)
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -42,11 +46,18 @@ def printMenu():
     print("4- Libros por género")
     print("0- Salir")
 
-def initCatalog():
+def initLinkedCatalog():
     """
     Inicializa el catalogo de libros
     """
-    return controller.initCatalog()
+    return controller.initLinkedCatalog()
+
+
+def initArrayCatalog():
+    """
+    Inicializa el catalogo de libros
+    """
+    return controller.initArrayCatalog()
 
 
 def loadData(catalog):
@@ -61,7 +72,7 @@ def printTendencyVideosByCountry(list_of_videos):
     Imprime los videos que se encontraron al buscar por cantidad de views, país de
     tendencia, y categoría de tendencia.
     """
-    
+
 
 
 catalog = None
@@ -73,21 +84,39 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        catalog_type = input("¿Con qué tipo de lista quiere trabajar?: ")
         print("Cargando información de los archivos ...\n")
-        catalog = initCatalog()
-        loadData(catalog)
-        first_video = catalog['videos']['elements'][0]
-        print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
-        print(catalog['videos']['elements'][0])
-        print('Primer registro de video cargado:\n')
-        print('Título del vídeo:', first_video['title'], '\n',
+        if catalog_type == 'Encadenada':
+            catalog = initLinkedCatalog()
+            loadData(catalog)
+            first_video = sl.firstElement(catalog['videos'])
+            print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
+            print('Primer registro de video cargado:\n')
+            print('Título del vídeo:', first_video['title'], '\n',
             'Nombre del canal:', first_video['channel_title'], '\n',
             'Fecha de tendencia:', first_video['trending_date'], '\n',
             'País de tendencia:', first_video['country'], '\n',
             'Cantidad de vistas:', first_video['views'], '\n',
             'Cantidad de likes:', first_video['likes'], '\n',
             'Cantidad de dislikes:', first_video['dislikes'], '\n',)
-        print('\nCatálogo de categorías: \n', catalog['categories']['elements'])
+            print('\nCatálogo de categorías: \n', catalog['categories'])
+        elif catalog_type == 'Arreglo':
+            catalog = initArrayCatalog()
+            loadData(catalog)
+            first_video = al.firstElement(catalog['videos'])
+            print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
+            print(catalog['videos']['elements'][0])
+            print('Primer registro de video cargado:\n')
+            print('Título del vídeo:', first_video['title'], '\n',
+            'Nombre del canal:', first_video['channel_title'], '\n',
+            'Fecha de tendencia:', first_video['trending_date'], '\n',
+            'País de tendencia:', first_video['country'], '\n',
+            'Cantidad de vistas:', first_video['views'], '\n',
+            'Cantidad de likes:', first_video['likes'], '\n',
+            'Cantidad de dislikes:', first_video['dislikes'], '\n',)
+            print('\nCatálogo de categorías: \n', catalog['categories']['elements'])
+        
+        
 
 
     elif int(inputs[0]) == 2:
