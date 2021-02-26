@@ -28,6 +28,9 @@
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import selectionsort as ss
+from DISClib.Algorithms.Sorting import insertionsort as ins
+from DISClib.DataStructures import singlelinkedlist as sl
 assert cf
 
 """
@@ -100,18 +103,23 @@ def newBookTag(tag_id, book_id):
 def getViews(e):
     return e.get('views')
 
-def sortByCountryAndCategory(catalog, ammount, tendency_country, ca_id):
+def sortByCountryAndCategory(catalog, ammount, tendency_country, ca_id, sort_type):
     """
     Devuelve una lista con los videos con más vistas, según país de
     tendencia, y la categoría de tendencia.
     """
-    video_list = catalog['videos']['elements']
-    videos_by_country_and_category = []
-    for video in video_list:
-        if video['country'] == tendency_country:
-            if video['category_id'] == ca_id:                
-                videos_by_country_and_category.append(video)
-    print(videos_by_country_and_category)
+    videos_by_country_and_category = {'videos': None}
+    list_size = lt.size(catalog)
+    if catalog['videos']['type'] == 'ARRAY_LIST':
+        video_list = lt.getElement(catalog, list_size)
+        videos_by_country_and_category['videos'] = lt.newList('ARRAY_LIST',
+                                                            cmpfunction=None)
+        for video in video_list:
+            if video['country'] == tendency_country:
+                if video['category_id'] == ca_id:
+                    lt.addLast(catalog['videos'], video)
+        return print(videos_by_country_and_category)
+    else:
     
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -120,14 +128,18 @@ def compareCategoryName(catalog, category_name):
     """
     Entra el nombre de una categoría, y se consigue su ID.
     """
-    if catalog['videos']['type'] == "SINGLE_LINKED":
-        
+    if catalog['categories']['type'] == "ARRAY_LIST":
+        for category in catalog['categories']['elements']:
+            if category['name'] == category_name:
+                category_id = category['id']
+            return category_id
     else:
         for category in catalog['categories']['elements']:
             if category['name'] == category_name:
                 category_id = category['id']
+            return category_id
 
-    return category_id
+    
 
 
 # Funciones de ordenamiento
@@ -139,7 +151,7 @@ def cmpVideosByViews(video1, video2):
     video1: informacion del primer video que incluye su valor 'views'
     video2: informacion del segundo video que incluye su valor 'views'
     """
-    
+
 
 
 """def addVideoToCategory(catalog, category_id, video):

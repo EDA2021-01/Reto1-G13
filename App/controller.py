@@ -83,9 +83,9 @@ def loadCategories(catalog):
 
 # Funciones de consulta sobre el catálogo
 
-def loadSortingByCountryAndCategory(catalog, views, country, category_name):
+def loadSortingByCountryAndCategory(catalog, views, country, category_name, sort_type):
     """
     Consulta los x mejores videos con más views según categoría y país.
     """
     ca_id = model.compareCategoryName(catalog, category_name)
-    return model.sortByCountryAndCategory(catalog, views, country, ca_id)
+    return model.sortByCountryAndCategory(catalog, views, country, ca_id, sort_type)
