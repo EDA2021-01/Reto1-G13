@@ -120,11 +120,6 @@ while True:
 
 
     elif int(inputs[0]) == 2:
-        ammount = input("¿Cuántos videos quiere listar?: ")
-        tendency_country = input("Ingrese el país a consultar: ")
-        tendency_category = input("Ingrese la categoría a consultar: ")
-        best_videos = controller.loadSortingByCountryAndCategory(catalog, ammount, tendency_country, tendency_category)
-        printTendencyVideosByCountry(best_videos)
 
 
     else:

@@ -132,6 +132,16 @@ def compareCategoryName(catalog, category_name):
 
 # Funciones de ordenamiento
 
+def cmpVideosByViews(video1, video2):
+    """
+    Devuelve verdadero (True) si los 'views' de video1 son menores que los del video2
+    Args:
+    video1: informacion del primer video que incluye su valor 'views'
+    video2: informacion del segundo video que incluye su valor 'views'
+    """
+    
+
+
 """def addVideoToCategory(catalog, category_id, video):
     categories = catalog['categories']
     poscategory = lt.isPresent(categories, category_id)
@@ -141,7 +151,7 @@ def compareCategoryName(catalog, category_name):
         category = newCategory(category_id)
         lt.addLast(categories, category)
     lt.addLast(tag['videos'], video) """
-    
+
 # Funciones de comparación
 def compareauthors(authorname1, author):
     if (authorname1.lower() in author['name'].lower()):
