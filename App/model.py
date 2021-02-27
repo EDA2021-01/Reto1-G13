@@ -109,30 +109,26 @@ def sortByCountryAndCategory(catalog, ammount, tendency_country, ca_id, sort_typ
     tendencia, y la categoría de tendencia.
     """
     videos_by_country_and_category = {'videos': None}
-    list_size = lt.size(catalog)
+    list_size = lt.size(catalog['videos'])
     if catalog['videos']['type'] == 'ARRAY_LIST':
-        video_list = lt.getElement(catalog, list_size)
-        videos_by_country_and_category['videos'] = lt.newList('ARRAY_LIST',
-                                                            cmpfunction=None)
+        video_list = catalog['videos']['elements']
+        videos_by_country_and_category= []
         for video in video_list:
             if video['country'] == tendency_country:
                 if video['category_id'] == ca_id:
                     lt.addLast(catalog['videos'], video)
         return print(videos_by_country_and_category)
     else:
+        return print('pinga')
     
 
 # Funciones utilizadas para comparar elementos dentro de una lista
-
 def compareCategoryName(catalog, category_name):
-    """
-    Entra el nombre de una categoría, y se consigue su ID.
-    """
     if catalog['categories']['type'] == "ARRAY_LIST":
         for category in catalog['categories']['elements']:
             if category['name'] == category_name:
                 category_id = category['id']
-            return category_id
+                return category_id
     else:
         for category in catalog['categories']['elements']:
             if category['name'] == category_name:
