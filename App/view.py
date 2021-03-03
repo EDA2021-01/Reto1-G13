@@ -24,12 +24,8 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
-from DISClib.DataStructures import singlelinkedlist as sl
-from DISClib.DataStructures import arraylist as al
 assert cf
 
-default_limit = (1000)
-sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -40,40 +36,29 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar la información sobre los videos")
-    print("2- Consultar los 'n' videos con más vistas por país según categoría")
-    print("3- Consultar los libros de un autor")
-    print("4- Libros por género")
-    print("0- Salir")
+    print("1- Cargar información en el catálogo en una lista encadenada o un arreglo")
+    print("2- Crear lista de los vídeos más vistos en un país y con categoría específica")
 
-def initLinkedCatalog():
+def initCatalog_Linked():
     """
     Inicializa el catalogo de libros
     """
-    return controller.initLinkedCatalog()
-
-
-def initArrayCatalog():
+    return controller.initCatalogLinked()
+    
+def initCatalog_Array():
     """
     Inicializa el catalogo de libros
     """
-    return controller.initArrayCatalog()
+    return controller.initCatalogArray()
 
+def printResults(videos, sample=3):
+    size = lt.size(videos)
+    if size > sample:
+        print("Los primeros ", sample, " videos ordenados son: ")
 
-def loadData(catalog):
-    """
-    Carga los libros en la estructura de datos
-    """
-    controller.loadData(catalog)
-
-
-def printTendencyVideosByCountry(list_of_videos):
-    """
-    Imprime los videos que se encontraron al buscar por cantidad de views, país de
-    tendencia, y categoría de tendencia.
-    """
-
-
+def Load_Data(catalog):
+    #Carga los datos del archivo
+    controller.Load_Data(catalog)
 
 catalog = None
 
@@ -84,46 +69,35 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        catalog_type = input("¿Con qué tipo de lista quiere trabajar?: ")
-        print("Cargando información de los archivos ...\n")
-        if catalog_type == 'Encadenada':
-            catalog = initLinkedCatalog()
-            loadData(catalog)
-            first_video = sl.firstElement(catalog['videos'])
-            print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
-            print('Primer registro de video cargado:\n')
-            print('Título del vídeo:', first_video['title'], '\n',
-            'Nombre del canal:', first_video['channel_title'], '\n',
-            'Fecha de tendencia:', first_video['trending_date'], '\n',
-            'País de tendencia:', first_video['country'], '\n',
-            'Cantidad de vistas:', first_video['views'], '\n',
-            'Cantidad de likes:', first_video['likes'], '\n',
-            'Cantidad de dislikes:', first_video['dislikes'], '\n',)
-            print('\nCatálogo de categorías: \n', catalog['categories'])
-        elif catalog_type == 'Arreglo':
-            catalog = initArrayCatalog()
-            loadData(catalog)
-            first_video = al.firstElement(catalog['videos'])
-            print('Registros de videos cargados:', str(lt.size(catalog['videos'])), '\n')
-            print(catalog['videos']['elements'][0])
-            print('Primer registro de video cargado:\n')
-            print('Título del vídeo:', first_video['title'], '\n',
-            'Nombre del canal:', first_video['channel_title'], '\n',
-            'Fecha de tendencia:', first_video['trending_date'], '\n',
-            'País de tendencia:', first_video['country'], '\n',
-            'Cantidad de vistas:', first_video['views'], '\n',
-            'Cantidad de likes:', first_video['likes'], '\n',
-            'Cantidad de dislikes:', first_video['dislikes'], '\n',)
-            print('\nCatálogo de categorías: \n', catalog['categories']['elements'])
-        
-        
+        selection = int(input("1 para SINGLE_LINKED o 2 para ARRAY_LIST:\n"))
+        if selection == 1:
+            catalog = initCatalog_Linked()
+            Load_Data(catalog)
+            print("Cargando información de los archivos ...")
+            print('Videos cargados: ' + str(lt.size(catalog['videos'])))
+            print('Etiquetas cargadas: ' + str(lt.size(catalog['tagvideos'])))
+            print('Categorías cargadas: ' + str(lt.size(catalog['categories'])))
+        if selection == 2:
+            catalog = initCatalog_Array()
+            Load_Data(catalog)
+            print("Cargando información de los archivos ....")
+            print('Videos cargados: ' + str(lt.size(catalog['videos'])))
+            print('Etiquetas cargadas: ' + str(lt.size(catalog['tagvideos'])))
+            print('Categorías cargadas: ' + str(lt.size(catalog['categories'])))
+            print(catalog['categories'])
+            
     elif int(inputs[0]) == 2:
-        ammount = input("¿Cuántos videos quiere listar?: ")
-        tendency_country = input("Ingrese el país a consultar: ")
-        tendency_category = input("Ingrese la categoría a consultar: ")
-        sort_type = input("¿Qué tipo de sort desea usar?: ")
-        best_videos = controller.loadSortingByCountryAndCategory(catalog, ammount, tendency_country, tendency_category, sort_type)
-        printTendencyVideosByCountry(best_videos)
+        size = int(input("¿Cuántos vídeos desea enlistar?\n"))
+        # country = str(input("Digite el nombre del país: \n"))
+        # category_videos = str(input("Digite la categoría: \n"))
+        if size > lt.size(catalog['videos']):
+            print('La cantidad de videos a enlistar es mayor a la cantidad de videos disponibles.')
+        else:
+            print("1 - Selection Sort \n2 - Insertion Sort \n3 - Shell Sort \n4 - Merge Sort \n5 - Quick Sort \n")
+            sortType = input("Seleccione el tipo de algoritmo de ordenamiento que desea usar: ")
+            result = controller.sortVideos(catalog, int(size), sortType)
+            print("Usando una muestra de ", size, " elementos, el tiempo que tomó ordenar el catálogo (en milisegundos) es ", str(result[0]))
+            
 
 
     else:

@@ -30,62 +30,43 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-
-def initLinkedCatalog():
-    """
-    Llama la funcion de inicializacion del catalogo del modelo.
-    """
-    catalog = model.newLinkedCatalog()
+    #Inicia el catálogo de videos en Array
+def initCatalogArray():
+    catalog = model.newCatalog_Array()
     return catalog
-
-def initArrayCatalog():
-    """
-    Llama la funcion de inicializacion del catalogo del modelo.
-    """
-    catalog = model.newArrayCatalog()
+    #Inicia el catálogod de videos en Linked list
+def initCatalogLinked():
+    catalog = model.newCatalog_Linked()
     return catalog
-
-
 # Funciones para la carga de datos
-
-
-def loadData(catalog):
+def Load_Data(catalog):
     """
     Carga los datos de los archivos y cargar los datos en la
-    estructura de datos.
+    estructura de datos
     """
-    loadVideos(catalog)
-    loadCategories(catalog)
+    LoadVideos(catalog)
+    LoadCategory(catalog)
 
-
-def loadVideos(catalog):
+def LoadVideos(catalog):
     """
-    Carga los videos del catálogo.
+    Carga los libros del archivo.  Por cada libro se toman sus autores y por
+    cada uno de ellos, se crea en la lista de autores, a dicho autor y una
+    referencia al libro que se esta procesando.
     """
     videosfile = cf.data_dir + 'videos-small.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
-    for video in input_file:
-        model.addVideo(catalog, video)
+    for videos in input_file:
+        model.addVideo(catalog,videos)
 
-
-def loadCategories(catalog):
-    """
-    Carga las categorías del catálogo.
-    """
-    categoriesfile = cf.data_dir + 'category-id.csv'
-    input_file = csv.DictReader(open(categoriesfile, encoding='utf-8'))
+def LoadCategory(catalog):
+    categoryfile = cf.data_dir + 'category-id.csv'
+    input_file = csv.DictReader(open(categoryfile, encoding='utf-8'))
     for category in input_file:
-        model.addCategory(catalog, category)
-
-
+        model.addCategories(catalog,category)
 # Funciones de ordenamiento
-
-
+def sortVideos(catalog, size, sortType):
+    """
+    Ordena los videos por views
+    """
+    return model.sortVideos(catalog, size, sortType)
 # Funciones de consulta sobre el catálogo
-
-def loadSortingByCountryAndCategory(catalog, views, country, category_name, sort_type):
-    """
-    Consulta los x mejores videos con más views según categoría y país.
-    """
-    ca_id = model.compareCategoryName(catalog, category_name)
-    return model.sortByCountryAndCategory(catalog, views, country, ca_id, sort_type)
